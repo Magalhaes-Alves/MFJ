@@ -60,21 +60,34 @@ function draw() {
   stroke(0)
 
   let angle= toRadians((cos_vector_2d(v1,v2)))
-  pi =TWO_PI
+  
+  stroke(255,0,0)
   if (mouseYC>0) {
     // Se o ângulo for maior que 180 graus, inverta os ângulos inicial e final
     arc(0, 0, 100, 100, angle,0);
+    fill(255,0,0)
+    arc(0, 0, 
+      ((360 -degrees(angle))/360)*100,
+      ((360-degrees(angle))/360)*100, 
+      angle,0);
+    angle=360 -degrees(angle)
   } else {
     // Caso contrário, desenhe o arco normalmente
     arc(0, 0, 100, 100, -angle, 0);
+    fill(255,0,0)
+    arc(0, 0, 
+      (degrees(-angle)/360)*100,
+      (degrees(-angle)/360)*100, 
+      -angle,0);
+    angle= degrees(angle)
   }
-  texto(`Angulo é: ${cos_vector_2d(v1,v2)}`,200,200)
+
+  texto(`Angulo é: ${angle}`,200,200)
 
   console.log(cos_vector_2d(v1,v2))
   
 
 }
-
 
 function goCartesian()
 {
