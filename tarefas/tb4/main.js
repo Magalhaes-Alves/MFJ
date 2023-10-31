@@ -1,3 +1,13 @@
+//Variaveis Globais
+var mouseXC, mouseYC = 0
+
+
+function toRadians(degree){
+
+  return (PI/180)*degree
+
+}
+
 function isVectorNull(v1){
   return v1.mag()==0
 }
@@ -38,12 +48,86 @@ function setup() {
 
 function draw() {
 
+  goCartesian()
 
-  v1 = createVector(200,150)
-  v2 = createVector(100,300)
+  v1 = createVector(mouseXC,mouseYC)
+  v2 = createVector(400,0)  
+  line(0,0,v1.x,v1.y)
+  line(0,0,v2.x,v2.y)
 
+
+  noFill()
+  stroke(0)
+
+  let angle= toRadians((cos_vector_2d(v1,v2)))
+  pi =TWO_PI
+  if (mouseYC>0) {
+    // Se o ângulo for maior que 180 graus, inverta os ângulos inicial e final
+    arc(0, 0, 100, 100, angle,0);
+  } else {
+    // Caso contrário, desenhe o arco normalmente
+    arc(0, 0, 100, 100, -angle, 0);
+  }
+  texto(`Angulo é: ${cos_vector_2d(v1,v2)}`,200,200)
 
   console.log(cos_vector_2d(v1,v2))
-  console.log(sen_vector_2d(v1,v2))
+  
 
+}
+
+
+function goCartesian()
+{
+  background(255)
+  
+  mouseXC = mouseX - width/2
+  mouseYC = height/2 - mouseY
+    
+  translate(width/2,height/2)
+  scale(1,-1,1)  
+}
+
+function grabMouse()
+{
+  mouseXC = mouseX - width/2
+  mouseYC = height/2 - mouseY
+}
+
+function texto(str,x,y)
+{
+  push()
+    translate( x, y)
+    scale(1,-1)
+    translate(-x,-y)
+  
+    // desenha o texto normalmente
+    text(str,x,y)
+  pop()
+}
+
+function colore(c1,c2,c3,c4)
+{
+  if(c4 != null)
+  {
+    fill(c1,c2,c3,c4)
+    stroke(c1,c2,c3,c4)
+    return
+  }
+  if(c3 != null)
+  {
+    fill(c1,c2,c3)
+    stroke(c1,c2,c3)
+    return
+  }
+  
+  if(c2 == null )
+  {
+    fill(c1)
+    stroke(c1)
+  }
+  else
+  {
+    fill(c1,c1,c1,c2)
+    stroke(c1,c1,c1,c2)
+  }    
 }
