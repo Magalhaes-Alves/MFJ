@@ -1,22 +1,25 @@
 //Variaveis Globais
 var mouseXC, mouseYC = 0
 
-
+//Função para converter radianos
 function toRadians(degree){
 
   return (PI/180)*degree
 
 }
 
+//Verifica se o vetor é nulo
 function isVectorNull(v1){
   return v1.mag()==0
 }
 
+//Converte radianos para graus
 function to_degree(r){
   
   return (180/PI)*r
 }
 
+//Angulo usando o cosseno
 function cos_vector_2d(v1,v2){
   
   if (isVectorNull(v1) || isVectorNull(v2)){
@@ -27,8 +30,9 @@ function cos_vector_2d(v1,v2){
   return degrees(acos(p5.Vector.dot(v1,v2)/(v1.mag()*v2.mag())))
   
 }
+//Angulo usando o seno
 
-function sen_vector_2d(v1,v2,is3d){
+function sen_vector_2d(v1,v2){
 
   if (isVectorNull(v1) || isVectorNull(v2)){
     console.log("Um dos vetores é nulo.")
@@ -83,8 +87,6 @@ function draw() {
   }
 
   texto(`Angulo é: ${angle}`,200,200)
-
-  console.log(cos_vector_2d(v1,v2))
   
 
 }

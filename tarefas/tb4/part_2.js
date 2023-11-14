@@ -2,6 +2,69 @@
 var mouseXC, mouseYC = 0
 
 
+function psedo_angle_cos(v1,v2){
+  return 1- ((v1.dot(v2))/(v1.mag()+v2.mag()))
+}
+
+//Calcula o pseudo angulo de um vetor com coordenadas x e y
+function pseudo_angle(x,y){
+
+    if (y >= 0) {
+      if (x >= 0) {
+          //Primeiro octante
+          if (x >= y) {
+              return y / x;
+          }
+          //Segundo octante
+          return 2 - x / y;
+      }
+      //Terceiro octante
+      if (-x <= y) {
+          return 2 + (-x) / y;
+      }
+      //Quarto octante
+      return 4 - y / (-x);
+  }
+  if (x < 0) {
+      //Quinto octante
+      if (-x >= -y) {
+          return 4 + (-y) / (-x);
+      }
+      //Sexto octante
+      return 6 - (-x) / (-y);
+  }
+  //Setimo octante
+  if (x <= -y) {
+      return 6 + x / (-y);
+  }
+  //Oitavo octante
+  return 8 - (-y) / x;
+}
+
+// Calcula o angulo entre dois vetores em [0,8)
+function two_vec_angle(v1,v2){
+
+  let v1_ang = pseudo_angle(v1.x,v1.y)
+  let v2_ang = pseudo_angle(v2.x,v2.y)
+
+
+  let diff = abs(v1_ang-v2_ang)
+
+  if (diff>4){
+    diff= 8-diff
+  }
+  return diff
+}
+
+function create_cartesian(){
+
+  
+  line(-windowWidth,0,windowWidth,0)
+  line(0,-windowHeight,0,windowHeight)
+  
+}
+
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
 }
@@ -9,7 +72,19 @@ function setup() {
 function draw() {
 
   goCartesian()
-  circle(mouseXC, mouseYC, 20);
+  create_cartesian()
+
+
+  v1 = createVector(mouseXC,mouseYC)
+  v2 = createVector(200,50)
+  line(0,0,v1.x,v1.y)
+  line(0,0,v2.x,v2.y)
+
+
+  
+  texto(`Pseudoangulo ${v1.x} ${v1.y}`,150,120)
+  texto(`Pseudoangulo ${pseudo_angle(v1.x,v1.y)}`,150,150)
+  texto(`Angulo entre vetores ${two_vec_angle(v1,v2)}`,150,170)
 }
 
 
