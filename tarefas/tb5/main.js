@@ -1,4 +1,4 @@
-var mouseXC, mouseYC = 0
+let mouseXC, mouseYC = 0
 
 let linhas =[]
 let particles =[]
@@ -10,13 +10,28 @@ class Particles{
   constructor(speed_x,speed_y,factor=1){
 
     this.p= createVector(random(0, width)-(width/2), random(0, height)-(height/2))
+
+    if(arguments.length ==0){
+      speed_x =random(100)/100
+      speed_y = random(100)/100
+    }
+
     this.speed = createVector(speed_x,speed_y)
     this.speed = div(this.speed,this.speed.mag())
     this.factor = factor
+    this.color = color(random(256),random(256),random(256))
   }
 
+  changeSpeed(p){
+
+    this.speed = add(this.speed , mult(this.speed,p))
+  }
+
+
   draw(){
-    rect(this.p.x,this.p.y,2,2)
+    noStroke()
+    fill(this.color)
+    rect(this.p.x,this.p.y,10,10)
   }
 }
 
@@ -25,8 +40,10 @@ class Particles{
 class Line{
 
   //Construtor recebe objectos do tivo vec
-  constructor(start_i,end_i,start_f,end_f,n){
+  constructor(start_i,end_i,start_f,end_f,sw){
 
+      this.color = color(0)
+      this.strokeWeight = 1
       if (arguments.length ==2){
           this.start = start_i
           this.end =end_i
@@ -43,14 +60,16 @@ class Line{
       }else if(arguments.length ==5){
         this.start= createVector(start_i,end_i)
         this.end = createVector(start_f,end_f)
-        this.n = n
+        this.strokeWeight= sw
+
       }
 
   }
 
   drawLine(){
-
-      line(this.start.x,this.start.y,this.end.x, this.end.y)
+    stroke(this.color)
+    strokeWeight(this.strokeWeight)
+    line(this.start.x,this.start.y,this.end.x, this.end.y)
   }
 
   crosses(l){
@@ -98,8 +117,18 @@ class Line{
 
     return v.div(v.mag())
   }
-}
 
+  setColor(c){
+    this.color=c
+  }
+
+  setStrokeWeight(s){
+    if (s<0){
+      return 
+    }
+    this.strokeWeight =s 
+  }
+}
 
 function add(v1,v2) {return p5.Vector.add(v1,v2)}
 function sub(v1,v2) {return p5.Vector.sub(v1,v2)}
@@ -126,12 +155,11 @@ function createScene(){
   clear()
   background(255)
 
-  linhas.push(new Line(width/2,-height/2,width/2,height/2))
-  linhas.push(new Line(width/2,height/2,-width/2,height/2))
-  linhas.push(new Line(-width/2,height/2,-width/2,-height/2))
-  linhas.push(new Line(-width/2,-height/2,width/2,-height/2))
-  linhas.push(new Line(-30,50,25,-180))
-  linhas.push(new Line(150,150,400,400))
+  linhas = []
+  linhas.push(new Line(width/2,-height/2,width/2,height/2,4.0))
+  linhas.push(new Line(width/2,height/2,-width/2,height/2,4.0))
+  linhas.push(new Line(-width/2,height/2,-width/2,-height/2,4.0))
+  linhas.push(new Line(-width/2,-height/2,width/2,-height/2,4.0))
 
   particles.push(new Particles(0.1,2,1.0))
   particles.push(new Particles(1,1.8,1.0))
@@ -140,8 +168,9 @@ function createScene(){
 }
 
 function setup() {
-    createCanvas(400, 400);
+    createCanvas(800, 800);
     createScene()
+
   }
 
 function draw() {
@@ -165,6 +194,7 @@ function draw() {
         if(linha.crosses(new Line(particle.p,v2))){
           colisao=true
           n= linha.normal()
+          linha.setColor(particle.color)
         }
       }
     )
@@ -194,8 +224,6 @@ function draw() {
   });
   
   
-  colore(0)
-
   linhas.forEach(element => {
     element.drawLine()
   });
@@ -203,29 +231,60 @@ function draw() {
   particles.forEach(element => {
     element.draw()
   });
-
-  function mousePressed() {
-
-    console.log("TEste")
-    new_point.push(createVector(mouseX, mouseY));
-
-    if (new_point.length==2){
-
-      console.log(new_point)
-
-      linhas.push(new_point[0],new_point[1])
-      new_point=[]
-    }
-  }
-    
+ 
 }
+
+function mousePressed() {
+
+  new_point.push(createVector(mouseXC, mouseYC));
+
+  if (new_point.length==2){
+    let l=new Line(new_point[0],new_point[1])
+    l.setStrokeWeight(2)
+    linhas.push(l)
+    new_point=[]
+  }
+
+}
+
+
 
 
 function keyPressed() {
   if (keyCode === ENTER) {
     reset();
   }
+
+  if (keyCode === DOWN_ARROW){
+
+    particles.forEach(particle => {
+      particle.changeSpeed(-0.1)
+      console.log(particle.speed)
+    });
+  }
+
+
+  if (keyCode === UP_ARROW){
+
+    particles.forEach(particle => {
+      particle.changeSpeed(0.1)
+    });
+  }
+
+  if(keyCode ===65){
+
+    linhas.push(new Line(random(0,width)-width/2,
+                        random(0,height)-height/2,
+                        random(0,width)-width/2,
+                        random(0,height)-height/2))
+  
+  }
+
+  if (keyCode ===67){
+    particles.push(new Particles())
+  }
 }
+  
 
 function reset() {
   points = [];
